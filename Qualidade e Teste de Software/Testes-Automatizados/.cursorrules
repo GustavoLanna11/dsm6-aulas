@@ -1,0 +1,15 @@
+# Diretrizes de Qualidade - Projeto Quiz de Programação
+
+## Stack e Ferramentas
+- Python 3.12+ gerenciado via `uv`
+- Framework Web: FastAPI com Jinja2
+- Framework de Testes: Pytest.
+
+# Padrões de Código
+- Todas as funçõe sem `app` e `tests/` devem possuir Type Hints
+- Formatação e linting devem seguir o padrão do Ruff
+
+## Regras para Suíte de Testes
+- Estruturar testes na pasta `tests/`
+- Seguir o padrão AAA: Organizar, Agir e Verificar(Arrange, Act, Assert)
+- 
