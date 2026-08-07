@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: pip install -r requirements.txt
+      - run: pytest tests/test_unit.py -v -x
+
+  test-integration:
+    needs: test-unit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: pip install -r requirements.txt
+      - run: pytest tests/test_integration.py -v -x
+
+  test-e2e:
+    needs: test-integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: pip install -r requirements.txt
+      - run: playwright install --with-deps chromium
+      - run: xvfb-run pytest tests/test_ui.py -v -x

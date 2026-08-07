@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="quiz-header">
+    <a href="/" class="close-btn" title="Reiniciar">✕</a>
+    
+    <div class="progress-container">
+        <div class="progress-bar" style="width: {{ (aluno.xp % 1000) / 10 }}%;"></div>
+    </div>
+    
+    <div class="header-stats">
+        <div class="stat-badge xp-badge" title="XP acumulado no nível atual">
+            <span class="stat-text">XP: {{ aluno.xp % 1000 }}/1000</span>
+        </div>
+        <div class="stat-badge level-badge" title="Seu nível atual">
+            <span class="stat-text">Nível: {{ aluno.nivel }}</span>
+        </div>
+    </div>
+</header>
+
+<div class="quiz-content">
+    <div class="question-card">
+        <span class="challenge-tag">Desafio #{{ desafio.id }}</span>
+        <p id="pergunta" class="question">{{ desafio.pergunta }}</p>
+    </div>
+
+    <form class="answer-form" method="post" action="/responder">
+        <input type="hidden" name="desafio_id" value="{{ desafio.id }}">
+        <input type="hidden" name="timestamp" value="{{ timestamp }}">
+        <input type="text" id="resposta" name="resposta" placeholder="Digite sua resposta em Python..." autocomplete="off" autofocus required>
+        <button type="submit" id="enviar" class="btn-primary">Verificar</button>
+    </form>
+</div>
+{% endblock %}

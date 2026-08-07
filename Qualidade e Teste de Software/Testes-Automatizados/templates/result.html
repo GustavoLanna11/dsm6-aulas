@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="quiz-header">
+    <a href="/" class="close-btn" title="Reiniciar">✕</a>
+    
+    <div class="progress-container">
+        <div class="progress-bar" style="width: {{ (aluno.xp % 1000) / 10 }}%;"></div>
+    </div>
+    
+    <div class="header-stats">
+        <div class="stat-badge xp-badge" title="XP acumulado no nível atual">
+            <span class="stat-text">XP: {{ aluno.xp % 1000 }}/1000</span>
+        </div>
+        <div class="stat-badge level-badge" title="Seu nível atual">
+            <span class="stat-text">Nível: {{ aluno.nivel }}</span>
+        </div>
+    </div>
+</header>
+
+<div class="quiz-content">
+    {% if acertou %}
+    <div id="resultado" class="result-card success-card">
+        <h2 class="result-title success-text">Resposta Correta!</h2>
+        <p class="result-text">Você ganhou <strong>+{{ xp_ganho }} XP</strong>.</p>
+        {% if nivel_subiu %}
+        <p class="level-up-banner">Parabéns! Você subiu para o Nível {{ aluno.nivel }}!</p>
+        {% endif %}
+    </div>
+    {% else %}
+    <div id="resultado" class="result-card error-card">
+        <h2 class="result-title error-text">Resposta Incorreta</h2>
+        <p class="result-text">Tente novamente!</p>
+        <p class="retry-hint">Tente focar nos detalhes da sintaxe Python.</p>
+    </div>
+    {% endif %}
+
+    <div class="actions-section">
+        <a href="/" class="btn-primary next-btn">Continuar</a>
+    </div>
+</div>
+{% endblock %}

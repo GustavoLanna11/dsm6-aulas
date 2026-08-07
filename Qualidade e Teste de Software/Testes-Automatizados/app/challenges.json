@@ -1,0 +1,7 @@
+[
+    {"id": 1, "pergunta": "Qual o resultado de 2 + 2 em Python?", "resposta": "4"},
+    {"id": 2, "pergunta": "Qual função imprime na tela em Python?", "resposta": "print"},
+    {"id": 3, "pergunta": "Qual o tipo de dado de 3.14 em Python?", "resposta": "float"},
+    {"id": 4, "pergunta": "Como se declara uma lista vazia em Python?", "resposta": "[]"},
+    {"id": 5, "pergunta": "Qual palavra-chave define uma função em Python?", "resposta": "def"}
+]
