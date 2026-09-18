@@ -98,3 +98,62 @@ print('Linhas após limpeza: ', len(limpo))
 print('Estados após padronização: ', limpo['estado'].nunique())
 print('Formas de pagamento após padronização: ', limpo['forma_pagamento'].nunique())
 print('Canais de Vendas: ', limpo['canal_venda'].nunique())
+
+# Padronização e Normalização 
+variaveis = ['idade_cliente', 'renda_mensal', 'valor_total']
+
+# Mostra como idade, renda e valor de compra possuem escalas muito diferentes
+print('\nEscala Original:')
+print(limpo[variaveis].agg('min', 'max', 'mean').round(2))
+
+#Min - Max transforma cada atributo para o intervalo de 0 e 1
+limpo[['idade_minmax', 'renda_minmax', 'valor_minmax']] = (MinMaxScaler().fit_transform(limpo[variaveis]))
+fit_transform(limpo[variaveis])
+
+# Z-Score deixar a média próxima a 0 e o desvio-padrão próximo a 1
+limpo[['idade_z', 'renda_z', 'valor_z']] = (StandardScaler().fit_transform(limpo[variaveis]))
+
+# RobustScaler uma a mediana e quartis, sendo util quando existem outliers
+limpo['renda_robusta']=(RobustScaler().fit_transform(limpo[['renda_mensal']]).ravel())
+
+print('\nExemplo das trasnformações: ')
+print(
+    limpo[
+        'idade_cliente',
+        'idade_minmax',
+        'idade_z',
+        'renda_mensal',
+        'renda_minmax',
+        'renda_z',
+        'renda_robusta',
+    ].head(5).round(3).to_string(index=False)
+)
+
+# Discritização e Binarização
+limpo['faixa_etaria'] = pd.cut(
+    limpo['idade_cliente'], 
+    bins=[17, 24, 34, 44, 54, 64, 120]
+    labels=['18-24', '25-34', '35-44', '45-54', '55-64', '65+']
+)
+
+# Qcut: divide os dados em quantis, útil para criar faixas de renda
+limpo['faixa_renda'] = pd.qcut(
+    limpo['renda_mensal'], 
+    q=4, 
+    labels=['Baixo', 'Médio', 'Alto', 'Muito Alto']
+)
+
+#Binarização: acima de mil recebe 1 caso contrário 0
+limpo['alto_ticket']=(limpo['valor_total']>1000).astype(int)
+print('\nFaixas Etárias:')
+print(limpo['faixa_etaria'].value_counts(sort=False))
+
+print('\nFaixas de Ticket:')
+print(limpo['faixa_ticket'].value_counts(sort=False))
+
+print('\nPedidos acima de mil:')
+print(limpo['alto_ticket'].value_counts().sort_index())
+print(f"Percentual de alto ticket: {limpo['alto_ticket'].mean()*100:.2f}%")
+
+#Codificação de variáveis categóricas
+
