@@ -157,3 +157,57 @@ print(f"Percentual de alto ticket: {limpo['alto_ticket'].mean()*100:.2f}%")
 
 #Codificação de variáveis categóricas
 
+
+dumies = [
+    c for c in modelo.columns
+    if c.startswith(('forma_pagamento_', 'canal_venda_', 'dispositivo_'))
+]
+
+print ('Colunas criadas pelo One-hot:', len(dumies))
+print  (dumies)
+
+
+#Labe/Ordinal Encoding: como fidelidade possui ordem natural, usamos números que representam Bronze < Prata < Ouro < Diamante
+
+ordem = {'BRONZE': 0, 'PRATA': 1, 'OURO': 2, 'DIAMANTE': 3}
+limpo['fidelidade_cod'] = limpo['nivel_fidelidade'].str.upper().map(ordem)
+
+print('\nCodificação de fidelidade:')
+print(
+    limpo[['nivel_fidelidade', 'fidelidade_cod']]
+    .drop_duplicates()
+    .sort_values('fidelidade_cod')
+    .to_string(index=False)
+)
+
+# Target Encoding precisa aprender SOMENTE com o treino, evitando que informações
+treino, teste=train_test_split(
+    limpo,
+    test_size=0.25,
+    random_state=42,
+    stratify=limpo['recomprou_90d']
+)
+
+media_global= treino['recomprou_90d'].mean()
+mapa_target = treino.groupby('id_parceiro')['recomprou_90d'].mean()
+teste=teste.copy()
+teste['parceiro_te']=(
+    teste['id_parceiro'].map(mapa_target).fillna(media_global)
+)
+
+print('\nTreino:', len(treino), '|Teste:', len(teste))
+print(f'Média global de recompra: {media_global:.3f}')
+
+print('\nExemplo de Target Encoding:')
+print(
+    teste[['id_parceiro', 'recomprou_90d', 'parceiro_te']]
+    .head(8)
+    .round(3)
+    .to_string(index=False)
+)
+
+#Resumo
+print('\n === Resumo de Pré-Processamento ===')
+print('Base Recebida: ', len(df), 'linhas')
+print('Base Limpa:', len(limpo), 'linhas')
+print('O dado passou por: limpeza -> transformação -> discritização -> codificação')
