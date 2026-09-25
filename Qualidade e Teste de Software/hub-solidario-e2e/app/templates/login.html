@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hub Solidario - Autenticacao</title>
+    <style>
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #f1f5f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: #ffffff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h1 { margin-top: 0; color: #1e293b; font-size: 1.5rem; text-align: center; }
+        .form-group { margin-bottom: 1.25rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #334155; font-size: 0.9rem; }
+        input { width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; }
+        input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+        button { width: 100%; padding: 0.75rem; background-color: #2563eb; color: #ffffff; border: none; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; }
+        button:hover { background-color: #1d4ed8; }
+        .alert { display: none; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.9rem; }
+        .alert-error { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Hub Solidario</h1>
+        <div id="alerta-erro" class="alert alert-error" role="alert"></div>
+        <form id="form-login" onsubmit="realizarLogin(event)">
+            <div class="form-group">
+                <label for="email">E-mail de Acesso</label>
+                <input id="email" type="email" required autocomplete="username" placeholder="seu.email@hubsolidario.org">
+            </div>
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input id="senha" type="password" required autocomplete="current-password" placeholder="Digite sua senha">
+            </div>
+            <button type="submit" id="btn-entrar">Entrar no Sistema</button>
+        </form>
+    </div>
+
+    <script>
+        async function realizarLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById("email").value;
+            const senha = document.getElementById("senha").value;
+            const alerta = document.getElementById("alerta-erro");
+            alerta.style.display = "none";
+
+            try {
+                const response = await fetch("/api/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, senha })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    window.location.href = data.redirect;
+                } else {
+                    const erro = await response.json();
+                    alerta.textContent = erro.detail || "Credenciais invalidas.";
+                    alerta.style.display = "block";
+                }
+            } catch (err) {
+                alerta.textContent = "Erro de comunicacao com o servidor.";
+                alerta.style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>

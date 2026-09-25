@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hub Solidario - Painel de Campanhas</title>
+    <style>
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #f8fafc; margin: 0; padding: 2rem; }
+        .container { max-width: 900px; margin: 0 auto; background: #ffffff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        h1 { margin: 0; color: #0f172a; font-size: 1.75rem; }
+        button.btn-primary { background-color: #16a34a; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        button.btn-primary:hover { background-color: #15803d; }
+        .search-box { margin-bottom: 1.5rem; }
+        .search-box input { width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; }
+        .modal-form { display: none; background: #f1f5f9; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #e2e8f0; }
+        .form-grid { display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 1rem; margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.4rem; font-weight: 600; color: #334155; font-size: 0.85rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.6rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background-color: #f8fafc; color: #475569; font-size: 0.85rem; text-transform: uppercase; }
+        .alert { display: none; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.9rem; }
+        .alert-success { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .alert-error { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Painel de Campanhas</h1>
+            <button id="btn-nova-campanha" class="btn-primary" onclick="toggleFormulario()">Nova Campanha</button>
+        </div>
+
+        <div id="mensagem-status" class="alert alert-success" role="status"></div>
+        <div id="alerta-erro" class="alert alert-error" role="alert"></div>
+
+        <div id="formulario-campanha" class="modal-form">
+            <h2 style="margin-top:0; font-size: 1.1rem; color: #1e293b;">Cadastrar Nova Campanha Solidaria</h2>
+            <form id="form-campanha" onsubmit="salvarCampanha(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="titulo">Titulo da Acao</label>
+                        <input id="titulo" type="text" placeholder="Ex: Inverno Solidario 2026">
+                    </div>
+                    <div class="form-group">
+                        <label for="meta">Meta de Arrecadacao (R$)</label>
+                        <input id="meta" type="number" step="0.01" placeholder="Ex: 5000.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="categoria">Categoria</label>
+                        <select id="categoria">
+                            <option value="">Selecione uma categoria...</option>
+                            <option value="Agasalhos e Cobertores">Agasalhos e Cobertores</option>
+                            <option value="Alimentacao">Alimentacao</option>
+                            <option value="Material Escolar">Material Escolar</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button type="submit" class="btn-primary" id="btn-salvar">Salvar Campanha</button>
+                    <button type="button" onclick="toggleFormulario()" style="padding: 0.6rem 1rem; border: 1px solid #cbd5e1; background: white; border-radius: 6px; cursor: pointer;">Cancelar</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="search-box">
+            <input id="busca" type="text" placeholder="Buscar campanhas..." oninput="filtrarTabela(this.value)">
+        </div>
+
+        <div class="table-container">
+            <table role="table" id="tabela-campanhas">
+                <thead>
+                    <tr>
+                        <th>Titulo</th>
+                        <th>Categoria</th>
+                        <th>Meta (R$)</th>
+                        <th>Arrecadado (R$)</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo-tabela">
+                    {% for c in campanhas %}
+                    <tr role="row" aria-label="{{ c.titulo }}">
+                        <td><strong>{{ c.titulo }}</strong></td>
+                        <td>{{ c.categoria }}</td>
+                        <td>R$ {{ c.meta }}</td>
+                        <td>R$ {{ c.arrecadado }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function toggleFormulario() {
+            const form = document.getElementById("formulario-campanha");
+            form.style.display = form.style.display === "block" ? "none" : "block";
+        }
+
+        async function salvarCampanha(event) {
+            event.preventDefault();
+            const titulo = document.getElementById("titulo").value.trim();
+            const meta = document.getElementById("meta").value.trim();
+            const categoria = document.getElementById("categoria").value.trim();
+            const statusMsg = document.getElementById("mensagem-status");
+            const alertMsg = document.getElementById("alerta-erro");
+
+            statusMsg.style.display = "none";
+            alertMsg.style.display = "none";
+
+            if (!titulo || !meta || !categoria) {
+                alertMsg.textContent = "Preencha todos os campos obrigatorios.";
+                alertMsg.style.display = "block";
+                return;
+            }
+
+            try {
+                const response = await fetch("/api/campanhas", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ titulo, meta, categoria })
+                });
+
+                if (response.ok) {
+                    const nova = await response.json();
+                    statusMsg.textContent = "Campanha cadastrada com sucesso!";
+                    statusMsg.style.display = "block";
+                    adicionarLinhaTabela(nova);
+                    document.getElementById("form-campanha").reset();
+                    toggleFormulario();
+                } else {
+                    const erro = await response.json();
+                    alertMsg.textContent = erro.detail || "Erro ao salvar campanha.";
+                    alertMsg.style.display = "block";
+                }
+            } catch (err) {
+                alertMsg.textContent = "Erro de comunicacao com o servidor.";
+                alertMsg.style.display = "block";
+            }
+        }
+
+        function adicionarLinhaTabela(campanha) {
+            const corpo = document.getElementById("corpo-tabela");
+            const tr = document.createElement("tr");
+            tr.setAttribute("role", "row");
+            tr.setAttribute("aria-label", campanha.titulo);
+            tr.innerHTML = `
+                <td><strong>${campanha.titulo}</strong></td>
+                <td>${campanha.categoria}</td>
+                <td>R$ ${campanha.meta}</td>
+                <td>R$ ${campanha.arrecadado}</td>
+            `;
+            corpo.prepend(tr);
+        }
+
+        function filtrarTabela(termo) {
+            const termoLower = termo.toLowerCase();
+            const linhas = document.querySelectorAll("#corpo-tabela tr");
+            linhas.forEach(linha => {
+                const texto = linha.innerText.toLowerCase();
+                linha.style.display = texto.includes(termoLower) ? "" : "none";
+            });
+        }
+    </script>
+</body>
+</html>
