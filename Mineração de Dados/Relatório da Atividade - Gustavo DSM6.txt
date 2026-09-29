@@ -1,0 +1,13 @@
+Gustavo Marques de Lanna - DSM6
+
+1) Tema: Palmeiras Campeão da Libertadores.
+Origem: Notícia/matéria sobre as conquistas do Palmeiras na Libertadores de 2020 e 2021.
+Quantidade de Palavras: 380 (considerando apenas o texto textual, sem contar pontuações).
+
+2) Aproximadamente 512 tokens (considerando a tokenização completa via NLTK, incluindo pontuações e numerais).
+
+3) 335 tokens (resultado exato da execução do script com a lista padrão de stopwords em português do NLTK).
+
+4) palmeiras (5 vezes), santos (5 vezes), final (5 vezes), libertadores (4 vezes), título (4 vezes), 2021 (4 vezes), flamengo (3 vezes), conquistou (3 vezes), edição (3 vezes), história (3 vezes)
+
+5) A remoção de stopwords é importante em PLN porque elimina palavras de baixo valor semântico e alta frequência, como artigos e preposições, reduzindo a dimensionalidade dos dados, acelerando o processamento computacional e diminuindo ruídos. Isso permite que os algoritmos direcionem a atenção para os termos que realmente carregam o significado essencial do texto, como substantivos, verbos e adjetivos, melhorando o desempenho de modelos em tarefas de classificação, busca e análise de sentimentos.

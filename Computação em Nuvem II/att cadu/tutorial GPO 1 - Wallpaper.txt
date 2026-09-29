@@ -1,0 +1,37 @@
+· Opção C (Personalização / Experiência): Definir um papel de parede corporativo padrão e impedir a alteração pelo usuário.
+
+Configuração de GPO - Wallpaper Personalizado
+
+Na fatec, é necessário aplicar um papel de parede personaizado a alguns setores, como por exemplo o de Tecnologia, para os administradores.
+
+1. Inicialize o Server;
+2. Faça login com o usuário administrador;
+3. Adicione uma imagem de sua preferencia na area de trabalho;
+4. No disco local C, crie uma pasta chamada WALLPAPER;
+5. Vá nas propriedades da pasta, e habilite o compartilhamento;
+6. Agora, clique em "security" e edite o grupo de usuários, adicionando "EVERYONE" com acesso full control;
+7. Copie a imagem para a pasta compartilhada;
+8. Pesquise por Group "Police" e abra o menu;
+9. Clique com o botão direito na OU desejada, no caso, fatec;
+10. Crie uma nova GPO denominada WALLPAPER PADRÃO;
+11. Com o botão direito, vá em editar a GPO criada;
+12. Ao abrir o menu, clique em "USER -> POLICIES -> TEMPLATE ADM -> DESKTOP -> WALLPAPER"
+13. Aqui, basta selecionar "enable" para  ativar a config de wallpaper e adicione o caminho da pasta compartilhada: srv-dc01\wallpaper\wpp.padrao.png
+14. Abra uma maquina cliente que está no ad e teste 
+15. Abra o terminal cmd e execute o comando gpupdate /force para aplicar as mudanças
+16. abra o menu iniciar do windows e saia do usuário, posteriormente faça login mais uma vez;
+17. Wallpaper configurado;
+
+
+Configuracao de gpo - barrar painel de controle
+
+1. inicialize
+2. faca login
+3. pesquise gpo
+4. clique na ou desejada
+5. crie a gpo nova
+6. edite ela
+7. va na opcao de controle
+8. inicialize a maquina client e faca login
+9. pesquise por painel de controle
+10. pesquisa barrada
