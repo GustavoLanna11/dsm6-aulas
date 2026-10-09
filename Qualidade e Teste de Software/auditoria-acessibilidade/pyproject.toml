@@ -10,6 +10,15 @@ dependencies = [
     axe-playwright-python>=0.1.5"
 ]
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --headed"
+markers = [
+    "acessibility: Testes automatizados"
+    "keyboard: Testes de navegação"
+]
+
+
 [project.scripts]
 auditoria-acessibilidade = "auditoria_acessibilidade:main"
 
