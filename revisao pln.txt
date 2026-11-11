@@ -1,0 +1,25 @@
+1. Apresentações reais de PLN: Tradutor de texto, gemini, claude, assistente de IA's num geral. 
+Linguagem natural X Programação: Linguagem natural é algo que nós falamos, 
+conjunto de palavras e símbolos que "fazem sentido", enquanto a linguagem de programação é um conjunto para que o PC faça tarefas.
+Pq o pc transforma? Para que possa entender e fazer a devolução.
+
+2. Abordagens
+simbolica - regras simples com um dicionário curto / para reestruturar tem que modificar o sistema todo. 1 tarefa apenas
+estatistica - propabilidade para um acontecimento / corretor ortografico por exemplo
+conexionista - pode se ter um tradutor, chatbot / dados com dependência entre si
+hibrida - combina 2 metodologias diferentes
+
+
+3. 
+a - tokeninzacao - transformar as palavras em tokens para que a maquina entenda (palavra e sentença)
+b - stopwords - remoção do a, e, as, os que não agregam valor ao texto, reduzindo as palavras processads.
+c - radicalização - reduzir ao radical, raiz / lematização - palavra do dicionario
+d - padronização, se tivermos palavras iguais com letras diferentes o sistema considera como itens diferentes
+
+4.
+a - bag of words - transforma em valores numericos para usar num perceptron por exemplo
+b - vocabulario - palavras pela tokenização
+c - documento-termo - vocabulario matematico 
+d - limitações bag of words - não considera ordem das palavras / quanto maior, mais o termo documento crese
+
+
